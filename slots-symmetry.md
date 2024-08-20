@@ -51,6 +51,7 @@ We define a family of (overloaded) functions $\operatorname{slots}$ from every s
 # Containment
 We define an element relation $\in \subseteq \operatorname{Enodes} \times \operatorname{Invocations}$, defined recursively as:
 -- If an E-node $n$ is contained in an e-class $c$ (set containment), then $n \in c[id_{\operatorname{slots}(c)}]$, where $id_{\operatorname{slots}(c)} = s_i \mapsto s_i$ is the identity slotmap on the set of slots $\operatorname{slots}(c)$.
+-- If $n \in c[m]$, then $n*m' \in c[m]*m'$.
 
 # Properties
 
