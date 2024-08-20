@@ -25,10 +25,12 @@ We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \opera
 - $a[m_1] * m_2 := a[m_1 * m_2]$
 - $f(t_1, \ldots, t_k) * m := f(t_1 * m, ldots, t_k * m)$
 - $f(a_1, \ldots, a_k) * m := f(a_1 * m, ldots, a_k * m)$
-- $(\lambda s_i.t) * m := $
+- $(\lambda s_i.t) * m := \lambda s_i. (t * m)$, assuming $s_i$ is neither in the domain nor codomain of $m$.
 
 - $x*m$ is only defined, if $\operatorname{dom}(m) = \operatorname{slots}(x)$
 - We follow the Barendregt convention: We assume that all bound slots are never colliding with anything else. And if they do, we just rename them.
+(- Note to future self: We also need the Barendregt convention for redundant slots)
+(- Note to future self: Maybe we should deprecate the invocation syntax $a[m]$ in favor of the more general $a*m$)
 
 ## Slots
 We define a family of (overloaded) functions $\operatorname{slots}$ from every syntactic construct to a set of slots $\{ s_1, \ldots, s_k \}$.
