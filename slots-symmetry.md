@@ -7,54 +7,70 @@ Similar to (regular) egraphs:
 - function symbols $f,g$
 - e-class ids $a,b$
 - slots $s_1, s_2, \ldots$
-- slotmap $m$ ::= $s_j \mapsto s_k, \ldots$ bijection.
+- slotmap $m$ ::= $[s_j \mapsto s_k, \ldots]$ bijection
 - invocation $i$ ::= $a * m$
-- terms   $t$ ::= $ f | f(t_1, \ldots, t_k) | s_j | \lambda s_j.t$
-- e-nodes $n$ ::= $ f | f(i_1, \ldots, i_k) | s_j | \lambda s_j.i$
-- e-classes $c$ ::= $ \{ n_1, \ldots n_m \}[s_1, \ldots, s_m]$
+- terms   $t$ ::= $f | f(t_1, \ldots, t_k) | s_j | \lambda s_j.t$
+- e-nodes $n$ ::= $f | f(i_1, \ldots, i_k) | s_j | \lambda s_j.i$
+- e-classes $c$ ::= $\{ n_1, \ldots n_m \}[s_1, \ldots, s_m]$
 
 We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \operatorname{Eclass}$ to interpret the invocations. 
 
 # Additional definitions
 
-## Action
+## slots(\_)
+We define a family of (overloaded) functions $\operatorname{slots}$ for e-class ids, invocations, terms and e-nodes to a set of slots $\{ s_1, \ldots, s_k \}$.
+
+#### slots(\_) for E-Class Id and Invocations
+- $\operatorname{slots}(a) := \{s_1, \ldots, s_m \}$, given $Classes(a) = \{ n_1, \ldots, n_k \}[s_1, \ldots, s_m]$
+- $\operatorname{slots}(a*m) := \operatorname{slots}(a) \circ m = \{m(s_j) | s_j \in \operatorname{slots(a)} \}$
+
+#### slots(\_) for Terms and E-Nodes
+Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
+
+- $\operatorname{slots}(f) := \emptyset$
+- $\operatorname{slots}(f(x_1, \ldots, x_k)) := \operatorname{slots}(x_1) \cup \ldots \cup \operatorname{slots}(x_k)$
+- $\operatorname{slots}(s_j) := \{s_j\}$
+- $\operatorname{slots}(\lambda s_j.x) := \operatorname{slots}(x) \setminus \{ s_j \}$
+
+$\operatorname{slots(t)}$ on terms corresponds to the set of free variables.
+
+## The Action \_ * m
+We define a family of (overloaded) functions $\_ * m$ for e-class ids, invocations, terms and e-nodes.
+
+Generally, $x*m$ is only defined, if $\operatorname{slots}(x) \subseteq \operatorname{dom}(m)$.
+
+- For any $x$ we have $(x*m)*m' = x*(m*m')$
+- with $m*m' := m' \circ m = \{ x \mapsto z ~|~ x \mapsto y \in m, y \mapsto z \in m' \}$
+
+#### \_ * m for E-Class Ids and Invocations
+- $a*m$ is just $a*m$, there is no way to simplify it
+- For Invocations $i = a*m'$, we define $i*m := a*(m'*m)$
+
+#### \_ * m for Terms and E-Nodes
+Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
 
 - $f * m := f$
-- $m_1 * m_2 := m_2 \circ m_1$
-- $(a * m_1) * m_2 := a (m_1 * m_2)$
-- $f(t_1, \ldots, t_k) * m := f(t_1 * m, ldots, t_k * m)$
-- $f(i_1, \ldots, i_k) * m := f(i_1 * m, ldots, i_k * m)$
-- $(\lambda s_j.t) * m := \lambda s_j. (t * m)$, assuming $s_j$ is neither in the domain nor codomain of $m$.
-- $(\lambda s_j.i) * m := \lambda s_j. (i * m)$, assuming $s_j$ is neither in the domain nor codomain of $m$.
+- $f(x_1, \ldots, x_k) * m := f(x_1 * m, \ldots, x_k * m)$
 - $s_j * m := m(s_j)$
-- $x*m$ is only defined, if $\operatorname{slots}(x) \subseteq \operatorname{dom}(m)$
-- We follow the Barendregt convention: We assume that all bound slots are never colliding with anything else. And if they do, we just rename them.
-(- Note to future self: We also need the Barendregt convention for redundant slots)
+- $(\lambda s_j.x) * m := \lambda s_j. (x * m)$, assuming $s_j$ is neither in the domain nor codomain of $m$.
 
-## Slots
-We define a family of (overloaded) functions $\operatorname{slots}$ from every syntactic construct to a set of slots $\{ s_1, \ldots, s_k \}$.
-- $\operatorname{slots} : \{ n_1, \ldots n_m \}[s_1, \ldots, s_m] \mapsto \{s_1, \ldots, s_m \}$
-- $\operatorname{slots}(x*m) := \operatorname{slots}(x) \circ m = \{m(s_i) | s_i \in \operatorname{slots(x)} \}$
-- $\operatorname{slots}(\lambda s_i.t) := \operatorname{slots}(t) \setminus \{ s_i \}$
-- $\operatorname{slots}(\lambda s_i.n) := \operatorname{slots}(n) \setminus \{ s_i \}$
-- $\ldots$ (for later)
+We follow the Barendregt convention: We assume that all bound slots are never colliding with anything else. And if they do, we just rename them.
+
+(Note to future self: We also need the Barendregt convention for redundant slots)
+
+We claim that this definition implies $slots(x*m) = m \circ slots(x)$ for all $x$.
 
 ## Examples: 
-- $ \operatorname{slots}(\lambda s_1. f(s_1,s_2,s_3)) = \operatorname{slots}(f(s_1,s_2,s_3)) \setminus \{s_1\} = \{s_2, s_3\}$ 
-- $ \lambda s_1. f(s_1,s_2,s_3) * (s_1 \to s_2, s_2 \to s_3,s_3 |-> s_1)$ does not typecheck
-- $ \lambda s_1. f(s_1,s_2,s_3) * (s_2 \to s_3,s_3 \to s_1) = \lambda s_1. f(s_1,s_2,s_3)$ needs freshness
-- $ a[s_2  \to s_3, s_47 \to s_2] =  a[s_47 \to s_2, s_2 \to s_3]; slots(a) = \{ s_2, s_47 \}$
+- $\operatorname{slots}(\lambda s_1. f(s_1,s_2,s_3)) = \operatorname{slots}(f(s_1,s_2,s_3)) \setminus \{s_1\} = \{s_2, s_3\}$ 
+- $\lambda s_1. f(s_1,s_2,s_3) * (s_1 \mapsto s_2, s_2 \mapsto s_3,s_3 \mapsto s_1)$ does not typecheck
+- $\lambda s_1. f(s_1,s_2,s_3) * (s_2 \mapsto s_3,s_3 \mapsto s_1) = \lambda s_1. f(s_1,s_2,s_3)$ needs freshness
+- $a[s_2 \mapsto s_3, s_47 \mapsto s_2] =  a[s_47 \mapsto s_2, s_2 \mapsto s_3]; slots(a) = \{ s_2, s_47 \}$
 
 # Containment
 We define an element relation $\in \subseteq \operatorname{Enodes} \times \operatorname{Invocations}$, defined recursively as:
-- If an E-node $n$ is contained in an e-class $c$ (set containment), then $n \in c[id_{\operatorname{slots}(c)}]$, where $id_{\operatorname{slots}(c)} = s_i \mapsto s_i$ is the identity slotmap on the set of slots $\operatorname{slots}(c)$.
-- If $n \in a$, then $n*m \in a*m$.
 
-# Properties
-
-- Eclasses are disjoint.
-- $m$s are (partial) permutations, i.e. bijections (?)
-
+- If an E-node $n$ is contained in an e-class $Classes(a)$ (set containment), then $n \in a[id_{\operatorname{slots}(a)}]$, where $id_{\operatorname{slots}(a)}(s_j) = s_j$ is the identity slotmap on the set of slots $\operatorname{slots}(a)$.
+- If $n \in i$, then $n*m \in i*m$.
 
 ## Notes
 - We need to be more precise about the slots of e-nodes and e-classes (union/intersection, etc)
