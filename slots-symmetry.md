@@ -24,10 +24,12 @@ We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \opera
 - $m_1 * m_2 := m_2 \circ m_1$
 - $a[m_1] * m_2 := a[m_1 * m_2]$
 - $f(t_1, \ldots, t_k) * m := f(t_1 * m, ldots, t_k * m)$
-- $f(a_1, \ldots, a_k) * m := f(a_1 * m, ldots, a_k * m)$
+- $f(a_1[m_1], \ldots, a_k[m_k]) * m := f(a_1[m_1] * m, ldots, a_k[m_k] * m)$
 - $(\lambda s_i.t) * m := \lambda s_i. (t * m)$, assuming $s_i$ is neither in the domain nor codomain of $m$.
+- $(\lambda s_i.a[m']) * m := \lambda s_i. (a[m'] * m)$, assuming $s_i$ is neither in the domain nor codomain of $m$.
+- $s_i * m := m(s_i)$
 
-- $x*m$ is only defined, if $\operatorname{dom}(m) = \operatorname{slots}(x)$
+- $x*m$ is only defined, if $\operatorname{slots}(x) \subseteq \operatorname{dom}(m)$
 - We follow the Barendregt convention: We assume that all bound slots are never colliding with anything else. And if they do, we just rename them.
 (- Note to future self: We also need the Barendregt convention for redundant slots)
 (- Note to future self: Maybe we should deprecate the invocation syntax $a[m]$ in favor of the more general $a*m$)
