@@ -41,7 +41,7 @@ We define a family of (overloaded) functions $m * \_$ for e-class ids, invocatio
 Generally, $m*x$ is only defined, if $\operatorname{slots}(x) \subseteq \operatorname{dom}(m)$.
 
 - For any $x$ we have $m*(m'*x) = (m'*m)*x$
-- with $m*m' := m \circ m' = \{ x \mapsto z ~|~ x \mapsto y \in m', y \mapsto z \in m \}$
+- with $m*m' := m \circ m' = \{ x \mapsto z ~\mid~ x \mapsto y \in m', y \mapsto z \in m \}$
 
 #### m * \_ for E-Classes, Ids and Invocations
 - $m * \{ n_1, \ldots, n_k\} :: \{ s_{i_1}, \ldots, s_{i_l} \} = \{ m * n_1, \ldots, m * n_k\} :: \{ m * s_{i_1}, \ldots, m * s_{i_l} \}$
@@ -93,14 +93,14 @@ Given a term ordering (we assume lexicographical) <, we define a canonical eleme
 
 We define the weak shape of an e-node $n$ as follows:
 
-- $\operatorname{weak\_shape}(n) := \min \{Sym(S) * n\}$, where $S$ = $\{ s_j ~|~ j \in \mathbb{N} \}$ is the set of all slots.
+- $\operatorname{weak\_shape}(n) := \min \{Sym(S) * n\}$, where $S$ = $\{ s_j ~\mid~ j \in \mathbb{N} \}$ is the set of all slots.
 
 ### Example
 - Consider the e-class $c = {s0+s1, s1+s0} :: {s0, s1}$, then the two e-nodes $f([s2, s3] * c, [s2, s3] * c)$ and $f([s2, s3] * c, [s3, s2] * c)$ should have the same hash because $[s2, s3] * c = [s3, s2] * c$. However, they don't have the same weak shape, because we don't compute the (weak shapes) of the invocations $[s2, s3] * c$.
 
 ## Strong shape
 
-- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ \operatorname{weak\_shape}(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) | m'_i in \operatorname{Aut}(c_i) \}$
+- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ \operatorname{weak\_shape}(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) ~\mid~ m'_i \in \operatorname{Aut}(c_i) \}$
 - This typechecks because $\operatorname{slots}(m * c) = \operatorname{slots}(c)$ for all $m \in \operatorname{Aut}(c)$
 - enodes must be hashable
 - hash must be invariant of renamings
