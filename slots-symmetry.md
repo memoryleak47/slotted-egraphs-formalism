@@ -22,7 +22,7 @@ We define a family of (overloaded) functions $\operatorname{slots}$ for e-class 
 
 #### slots(\_) for E-Class Id and Invocations
 - $\operatorname{slots}(a) := \{s_1, \ldots, s_m \}$, given $Classes(a) = \{ n_1, \ldots, n_k \} ::: \{s_1, \ldots, s_m\}$
-- $\operatorname{slots}(a*m) := \operatorname{slots}(a) \circ m = \{m(s_j) | s_j \in \operatorname{slots(a)} \}$
+- $\operatorname{slots}(a*m) := m \circ \operatorname{slots}(a) = \{m(s_j) | s_j \in \operatorname{slots(a)} \}$
 
 #### slots(\_) for Terms and E-Nodes
 Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
@@ -69,7 +69,7 @@ We claim that this definition implies $slots(x*m) = m \circ slots(x)$ for all $x
 # Containment
 We define an element relation $\in \subseteq \operatorname{Enodes} \times \operatorname{Invocations}$, defined recursively as:
 
-- If an E-node $n$ is contained in an e-class $Classes(a)$ (set containment), then $n \in a[id_{\operatorname{slots}(a)}]$, where $id_{\operatorname{slots}(a)}(s_j) = s_j$ is the identity slotmap on the set of slots $\operatorname{slots}(a)$.
+- If an E-node $n$ is contained in an e-class $Classes(a)$ (set containment), then $n \in a * id_{\operatorname{slots}(a)}$, where $id_{\operatorname{slots}(a)}(s_j) = s_j$ is the identity slotmap on the set of slots $\operatorname{slots}(a)$.
 - If $n \in i$, then $n*m \in i*m$.
 
 ## Notes
