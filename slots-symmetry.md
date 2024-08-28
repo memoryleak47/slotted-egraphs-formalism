@@ -20,8 +20,9 @@ We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \opera
 ## slots(\_)
 We define a family of (overloaded) functions $\operatorname{slots}$ for e-class ids, invocations, terms and e-nodes to a set of slots $\{ s_{i_1}, \ldots, s_{i_k} \}$.
 
-#### slots(\_) for E-Class Id and Invocations
-- $\operatorname{slots}(a) := \{s_1, \ldots, s_m \}$, given $\operatorname{Classes}(a) = \{ n_1, \ldots, n_k \} :: \{s_1, \ldots, s_m\}$
+#### slots(\_) for E-Classes, Ids and Invocations
+- $\operatorname{slots}(\{ n_1, \ldots n_m \} :: \{s_{i_1}, \ldots, s_{i_k}\}) := \{s_{i_1}, \ldots, s_{i_k}\}$
+- $\operatorname{slots}(a) := \operatorname{slots}(Classes(a))$
 - $\operatorname{slots}(m*a) := m \circ \operatorname{slots}(a) = \{m(s_j)~\mid~ s_j \in \operatorname{slots(a)} \}$
 
 #### slots(\_) for Terms and E-Nodes
@@ -31,9 +32,6 @@ Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
 - $\operatorname{slots}(f(x_1, \ldots, x_k)) := \operatorname{slots}(x_1) \cup \ldots \cup \operatorname{slots}(x_k)$
 - $\operatorname{slots}(s_j) := \{s_j\}$
 - $\operatorname{slots}(\lambda s_j.x) := \operatorname{slots}(x) \setminus \{ s_j \}$
-
-#### slots(\_) for E-Classes
-- $\operatorname{slots}(\{ n_1, \ldots n_m \} :: \{s_{i_1}, \ldots, s_{i_k}\}) := \{s_{i_1}, \ldots, s_{i_k}\}$
 
 $\operatorname{slots(t)}$ on terms corresponds to the set of free variables.
 
@@ -45,9 +43,13 @@ Generally, $m*x$ is only defined, if $\operatorname{slots}(x) \subseteq \operato
 - For any $x$ we have $m*(m'*x) = (m'*m)*x$
 - with $m*m' := m \circ m' = \{ x \mapsto z ~|~ x \mapsto y \in m', y \mapsto z \in m \}$
 
-#### m * \_ for E-Class Ids and Invocations
+#### m * \_ for E-Classes, Ids and Invocations
+- $m * \{ n_1, \ldots, n_k\} :: \{ s_{i_1}, \ldots, s_{i_l} \} = \{ m * n_1, \ldots, m * n_k\} :: \{ m * s_{i_1}, \ldots, m * s_{i_l} \}$
 - $m*a$ is just $m*a$, there is no way to simplify it
 - For Invocations $i = m*a$, we define $m'*i := (m'*m)*a$
+
+Note that there is a difference in semantics between e-classes and e-class ids for this action.
+So it might be necessary to keep them apart.
 
 #### m * \_ for Terms and E-Nodes
 Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
@@ -63,10 +65,6 @@ We follow the Barendregt convention: We assume that all bound slots are never co
 
 We claim that this definition implies $\operatorname{slots}(m*x) = m \circ \operatorname{slots}(x)$ for all $x$.
 
-#### m * \_ for E-classes
-
-We can extend this action to e-classes $c = \{ n_1, \ldots, n_k\} :: \{ s_{i_1}, \ldots, s_{i_l} \}$ element-wise, i.e. $c = \{ m * n_1, \ldots, m * n_k\} :: \{ m * s_{i_1}, \ldots, m * s_{i_l} \}$.
-
 ## Examples: 
 - $\operatorname{slots}(\lambda s_1. f(s_1,s_2,s_3)) = \operatorname{slots}(f(s_1,s_2,s_3)) \setminus \{s_1\} = \{s_2, s_3\}$ 
 - $\lambda s_1. f(s_1,s_2,s_3) * (s_1 \mapsto s_2, s_2 \mapsto s_3,s_3 \mapsto s_1)$ does not typecheck
@@ -74,10 +72,8 @@ We can extend this action to e-classes $c = \{ n_1, \ldots, n_k\} :: \{ s_{i_1},
 - $[s_2 \mapsto s_3, s_{47} \mapsto s_2] * a =  [s_47 \mapsto s_2, s_2 \mapsto s_3] * a; \operatorname{slots}(a) = \{ s_2, s_47 \}$
 
 # Containment
-We define an element relation $\in \subseteq \operatorname{Enodes} \times \operatorname{Invocations}$, defined recursively as:
-
-- If an E-node $n$ is contained in an e-class $\operatorname{Classes}(a)$ (set containment), then $n \in a * id_{\operatorname{slots}(a)}$, where $id_{\operatorname{slots}(a)}(s_j) = s_j$ is the identity slotmap on the set of slots $\operatorname{slots}(a)$.
-- If $n \in i$, then $m*n \in m*i$.
+We define an element relation $\in \subseteq \operatorname{Enodes} \times \operatorname{Invocations}$ as:
+- $n \in m*a$, iff $n \in m*Classes(a)$
 
 ## Notes
 - We need to be more precise about the slots of e-nodes and e-classes (union/intersection, etc)
@@ -89,30 +85,23 @@ The operator $*$ defines a left group action of the group $G \leq \operatorname{
 
 The automorphism group $\operatorname{Aut}(c)$ of an e-class $c = \{ n_1, \ldots, n_m\} :: \{ s_{i_1}, \ldots, s_{i_k} \}$ is the largest subgroup $\operatorname{Aut}(c) \leq \operatorname{Sym}(s_{i_1},\ldots,s_{i_m})$, such that $m * c = c$ for all $m \in \operatorname{Aut}(c)$.
 
-## Orbits and Canonical Elements
+## Orbits, Canonical Elements
+For an e-node $n$ and a group of slotmaps $M \leq \operatorname{slots}(n)$, the orbit $M * n$ is the set of all permutations of $n$ according to the group $M$, i.e. $M * n = \{ m * n ~\mid~ m \in M \}$.
+Given a term ordering (we assume lexicographical) <, we define a canonical element of the orbit $M * n := \min_{m \in M} m * n$ to be the minimal representative of the orbit.
 
-For an e-node $n$ and a group of slotmaps $M \leq \operatorname{slots}(n)$, the orbit $M * n$ is the set of all permutations of $n$ according to the group $M$, i.e. $M * n = \{ m * n \mid m \in M \}$.
+## Weak Shapes
 
-Given a term ordering (we assume lexicographical) $<$, we define a canonical element of the orbit $M * n := \min_{m \in M} m * n$ to be the minimal representative of the orbit.
+We define the weak shape of an e-node $n$ as follows:
 
-
-## Weak shapes
-
-($slots-list$ form an e-node is defined just like slots but with (ordered) lists instead of sets.)
-
- We define the weak shape of an e-node $n$ as follows:
- - $\operatorname{weak\_shape}(n) := \min {M * n}$ is the canonical element of the orbit $M * n$ where $M = \operatorname{Sym}(S)$, where $S$ = $\{ s_0, s_1, \ldots \}$ is the set of (all) slots.
+- $\operatorname{weak\_shape}(n) := \min \{Sym(S) * n\}$, where $S$ = $\{ s_j ~|~ j \in \mathbb{N} \}$ is the set of all slots.
 
 ### Example
 - Consider the e-class $c = {s0+s1, s1+s0} :: {s0, s1}$, then the two e-nodes $f([s2, s3] * c, [s2, s3] * c)$ and $f([s2, s3] * c, [s3, s2] * c)$ should have the same hash because $[s2, s3] * c = [s3, s2] * c$. However, they don't have the same weak shape, because we don't compute the (weak shapes) of the invocations $[s2, s3] * c$.
 
 ## Strong shape
 
-- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ weak_shape(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) | m'_i in \operatorname{Aut}(c_i) \}$
+- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ \operatorname{weak\_shape}(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) | m'_i in \operatorname{Aut}(c_i) \}$
 - This typechecks because $\operatorname{slots}(m * c) = \operatorname{slots}(c)$ for all $m \in \operatorname{Aut}(c)$
-
-## Strong shape computation
-
 - enodes must be hashable
 - hash must be invariant of renamings
 - weak shape: canonical naming $s_1, s_2, \ldots$
