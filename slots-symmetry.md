@@ -5,7 +5,7 @@
 Similar to (regular) egraphs:
 
 - function symbols $f,g$
-- e-class ids $a,b$
+- e-class ids $a,b, c$
 - slots $s_1, s_2, \ldots$
 - slotmap $m$ ::= $[s_j \mapsto s_k, \ldots]$ bijection
 - invocation $i$ ::= $m * a$
@@ -91,11 +91,25 @@ The automorphism group $\operatorname{Aut}(c)$ of an e-class $c = \{ n_1, \ldots
 
 ## Orbits and Canonical Elements
 
-Given a 
+For an e-node $n$ and a group of slotmaps $M \leq \operatorname{slots}(n)$, the orbit $M * n$ is the set of all permutations of $n$ according to the group $M$, i.e. $M * n = \{ m * n \mid m \in M \}$.
 
+Given a term ordering (we assume lexicographical) $<$, we define a canonical element of the orbit $M * n := \min_{m \in M} m * n$ to be the minimal representative of the orbit.
+
+
+## Weak shapes
+
+($slots-list$ form an e-node is defined just like slots but with (ordered) lists instead of sets.)
+
+ We define the weak shape of an e-node $n$ as follows:
+ - $\operatorname{weak\_shape}(n) := \min {M * n}$ is the canonical element of the orbit $M * n$ where $M = \operatorname{Sym}(S)$, where $S$ = $\{ s_0, s_1, \ldots \}$ is the set of (all) slots.
+
+### Example
+- Consider the e-class $c = {s0+s1, s1+s0} :: {s0, s1}$, then the two e-nodes $f([s2, s3] * c, [s2, s3] * c)$ and $f([s2, s3] * c, [s3, s2] * c)$ should have the same hash because $[s2, s3] * c = [s3, s2] * c$. However, they don't have the same weak shape, because we don't compute the (weak shapes) of the invocations $[s2, s3] * c$.
 
 ## Strong shape
 
+- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ weak_shape(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) | m'_i in \operatorname{Aut}(c_i) \}$
+- This typechecks because $\operatorname{slots}(m * c) = \operatorname{slots}(c)$ for all $m \in \operatorname{Aut}(c)$
 
 ## Strong shape computation
 
