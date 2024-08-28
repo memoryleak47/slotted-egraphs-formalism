@@ -11,7 +11,7 @@ Similar to (regular) egraphs:
 - invocation $i$ ::= $a * m$
 - terms   $t$ ::= $f | f(t_1, \ldots, t_k) | s_j | \lambda s_j.t$
 - e-nodes $n$ ::= $f | f(i_1, \ldots, i_k) | s_j | \lambda s_j.i$
-- e-classes $c$ ::= $\{ n_1, \ldots n_m \}[s_1, \ldots, s_m]$
+- e-classes $c$ ::= $\{ n_1, \ldots n_m \} ::: \{s_1, \ldots, s_m\}$
 
 We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \operatorname{Eclass}$ to interpret the invocations. 
 
@@ -21,7 +21,7 @@ We have a mapping $\operatorname{Classes} : \operatorname{Id} \rightarrow \opera
 We define a family of (overloaded) functions $\operatorname{slots}$ for e-class ids, invocations, terms and e-nodes to a set of slots $\{ s_1, \ldots, s_k \}$.
 
 #### slots(\_) for E-Class Id and Invocations
-- $\operatorname{slots}(a) := \{s_1, \ldots, s_m \}$, given $Classes(a) = \{ n_1, \ldots, n_k \}[s_1, \ldots, s_m]$
+- $\operatorname{slots}(a) := \{s_1, \ldots, s_m \}$, given $Classes(a) = \{ n_1, \ldots, n_k \} ::: \{s_1, \ldots, s_m\}$
 - $\operatorname{slots}(a*m) := \operatorname{slots}(a) \circ m = \{m(s_j) | s_j \in \operatorname{slots(a)} \}$
 
 #### slots(\_) for Terms and E-Nodes
@@ -90,7 +90,7 @@ The automorphism group $\operatorname{Aut}(c)$ of an e-class is the largest subg
 - hash must be invariant of renamings
 - weak shape: canonical naming $s_1, s_2, \ldots$
 - egraph idea: congruence, i.e. if $a = b -> f(a) = f(b)$ (in memory). This does not work in weak shapes:
-- example: $classes(a) = {(f s_10 s_11), (f s_11 s_10)}[s_10,s_11]$
+- example: $classes(a) = \{(f s_10 s_11), (f s_11 s_10)\} ::: \{s_10,s_11\}$
   enodes: $(+ a[s_10 \to s_1,s_11 \to s_2] a[s_10 \to s_2,s_11 \to s_1])$ and $(+ a[s_10 \to s_1,s_11 \to s_2] a[s_10 \to s_1,s_11 \to s_2])$
   concrete terms correspond to $ (+ (f x y) (f y x))$ and $(+ (f x y) (f x y))$
 - strong shape: lex-min of all equivalent weak shapes.
