@@ -74,7 +74,8 @@ We define an element relation $\in \subseteq \operatorname{Enodes} \times \opera
 
 ## Notes
 - We need to be more precise about the slots of e-nodes and e-classes (union/intersection, etc)
-- We allow the shortcut for ordered (instead of named) arguments, $i[s_j, s_{j'}, s_{j''}, ...] := i[s_k -> s_j, s_{k'} -> s_{j'}, s_{k''} -> s_{j''}, ...]$, assuming $slots(i) = \{s_k, s_{k'}, s_{k''}, ...\}$ and $k < k' < k'' < ...$.
+- We allow the shortcut for ordered (instead of named) arguments, $i * [s_j, s_{j'}, s_{j''}, ...] := i * [s_k -> s_j, s_{k'} -> s_{j'}, s_{k''} -> s_{j''}, ...]$, assuming $slots(i) = \{s_k, s_{k'}, s_{k''}, ...\}$ and $k < k' < k'' < ...$.
+- We allow to write $i[...]$ instead of $i * [...]$
   
 ## Group Action
 
