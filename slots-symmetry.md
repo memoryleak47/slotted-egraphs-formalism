@@ -32,6 +32,9 @@ Let $x, x_1, \ldots$ be either terms $t$ or invocations $i$.
 - $\operatorname{slots}(s_j) := \{s_j\}$
 - $\operatorname{slots}(\lambda s_j.x) := \operatorname{slots}(x) \setminus \{ s_j \}$
 
+#### slots(\_) for E-Classes
+- $\operatorname{slots}(\{ n_1, \ldots n_m \} :: \{s_{i_1}, \ldots, s_{i_k}\}) := \{s_{i_1}, \ldots, s_{i_k}\}$
+
 $\operatorname{slots(t)}$ on terms corresponds to the set of free variables.
 
 ## The Action m * \_
@@ -60,6 +63,10 @@ We follow the Barendregt convention: We assume that all bound slots are never co
 
 We claim that this definition implies $\operatorname{slots}(m*x) = m \circ \operatorname{slots}(x)$ for all $x$.
 
+#### m * \_ for E-classes
+
+We can extend this action to e-classes $c = \{ n_1, \ldots, n_k\} :: \{ s_{i_1}, \ldots, s_{i_l} \}$ element-wise, i.e. $c = \{ m * n_1, \ldots, m * n_k\} :: \{ m * s_{i_1}, \ldots, m * s_{i_l} \}$.
+
 ## Examples: 
 - $\operatorname{slots}(\lambda s_1. f(s_1,s_2,s_3)) = \operatorname{slots}(f(s_1,s_2,s_3)) \setminus \{s_1\} = \{s_2, s_3\}$ 
 - $\lambda s_1. f(s_1,s_2,s_3) * (s_1 \mapsto s_2, s_2 \mapsto s_3,s_3 \mapsto s_1)$ does not typecheck
@@ -76,13 +83,19 @@ We define an element relation $\in \subseteq \operatorname{Enodes} \times \opera
 - We need to be more precise about the slots of e-nodes and e-classes (union/intersection, etc)
 - We allow the shortcut for ordered (instead of named) arguments, $[s_j, s_{j'}, s_{j''}, ...] * i := [s_k \mapsto s_j, s_{k'} \mapsto s_{j'}, s_{k''} \mapsto s_{j''}, ...] * i$, assuming $slots(i) = \{s_k, s_{k'}, s_{k''}, ...\}$ and $k < k' < k'' < ...$.
   
-## Group Action
+## Automorphism Group
 
-Let $G \leq \operatorname{Sym}(s_1,\ldots,s_m)$, then $G$ acts on the set of enodes $n[s_1,\ldots,s_m]$ the obvious way $g n[s_1,\ldots,s_m] = n[g s_1, \ldots, g s_m]$. 
+The operator $*$ defines a left group action of the group $G \leq \operatorname{Sym}(\operatorname{slots}(x))$.
 
-Similarly, $G \subseteq \operatorname{Sym}(s_1,\ldots,s_m)$ acts on the e-class $c[s_1, \ldots, s_m] = \{n_1, \ldots, n_k\}$ element-wise, i.e. $g c = \{ g n_1, \ldots, g n_k \}$ (Note: this doesn't type check, we need to consider the appropriate restrictions of the groups acting on the different sets of slots).
+The automorphism group $\operatorname{Aut}(c)$ of an e-class $c = \{ n_1, \ldots, n_m\} :: \{ s_{i_1}, \ldots, s_{i_k} \}$ is the largest subgroup $\operatorname{Aut}(c) \leq \operatorname{Sym}(s_{i_1},\ldots,s_{i_m})$, such that $m * c = c$ for all $m \in \operatorname{Aut}(c)$.
 
-The automorphism group $\operatorname{Aut}(c)$ of an e-class is the largest subgroup $\operatorname{Aut}(c) \leq \operatorname{Sym}(s_1,\ldots,s_m)$, such that $g c = c$ for all $g \in \operatorname{Aut}(c)$.
+## Orbits and Canonical Elements
+
+Given a 
+
+
+## Strong shape
+
 
 ## Strong shape computation
 
