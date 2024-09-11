@@ -93,14 +93,18 @@ Given a term ordering (we assume lexicographical) <, we define a canonical eleme
 
 We define the weak shape of an e-node $n$ as follows:
 
-- $\operatorname{weak\_shape}(n) := \min \{Sym(S) * n\}$, where $S$ = $\{ s_j ~\mid~ j \in \mathbb{N} \}$ is the set of all slots.
+- $\operatorname{weak\_shape}(n) := \min_{\theta \in \operatorname{Sym}(S) } \{\theta * n\}$, where $S$ = $\{ s_j ~\mid~ j \in \mathbb{N} \}$ is the set of all slots.
 
 ### Example
 - Consider the e-class $c = {s0+s1, s1+s0} :: {s0, s1}$, then the two e-nodes $f([s2, s3] * c, [s2, s3] * c)$ and $f([s2, s3] * c, [s3, s2] * c)$ should have the same hash because $[s2, s3] * c = [s3, s2] * c$. However, they don't have the same weak shape, because we don't compute the (weak shapes) of the invocations $[s2, s3] * c$.
 
 ## Strong shape
 
-- $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) = \min \{ \operatorname{weak\_shape}(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) ~\mid~ m'_i \in \operatorname{Aut}(c_i) \}$
+Definition $\operatorname{strong\_shape}(f(m_1 * c_1, \ldots, m_k *c_k)) :=$
+$$ \min \{ \operatorname{weak\_shape}(f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k)) ~\mid~ m'_i \in \operatorname{Aut}(c_i) \},$$
+or equivalently 
+$$ \min \{ \theta * f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k) ~\mid~ m'_i \in \operatorname{Aut}(c_i),~\theta \in \operatorname{Sym}(S) \}$$
+
 - This typechecks because $\operatorname{slots}(m * c) = \operatorname{slots}(c)$ for all $m \in \operatorname{Aut}(c)$
 - enodes must be hashable
 - hash must be invariant of renamings
