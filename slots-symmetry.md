@@ -116,6 +116,9 @@ $$ \min \{ \theta * f(m_1*m'_1*c_1, \ldots, m_k * m'_k*c_k) ~\mid~ m'_i \in \ope
 - strong shape: lex-min of all equivalent weak shapes.
 - Conjecture: this is the double coset contstructive orbit problem
 
+Divide and conquer doesn't work because:
+$$ \min \{ \theta * m_2 * m_2' \mid \theta \in \operatorname{Sym}(S \setminus \operatorname{slots}(m_1*c_1)), m_2' \in \operatorname{Aut}(c_2) \} \neq$$
+$$ \min \{ \theta * \min \{ m_2 * m_2' \mid m_2' \in \operatorname{Aut}(c_2) \} \mid \theta \in \operatorname{Sym}(S \setminus \operatorname{slots}(m_1 * c_1))\}$$
 
 ## Open questions
 - Is $\lambda$ above the most generic possible, or are there examples of languages where the binders cannot be expressed this way?
